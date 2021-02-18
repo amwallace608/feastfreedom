@@ -1,0 +1,142 @@
+<div class="container">
+  <h3 class="text-align-center">Register Your kitchen</h3>
+  <!-- Page 1 -->
+  <div *ngIf="page == 1; else pg2">
+    <form [formGroup]="kitchenForm1" (ngSubmit) = "onSubmitPg1(kitchenForm1)">
+      <label>Kitchen Name</label>
+      <input type="text" [class.is-invalid] = "kitchenForm1.controls.name.invalid && kitchenForm1.controls.name.touched"
+      formControlName="name" class="form-control">
+        <div *ngIf="kitchenForm1.controls.name.errors && kitchenForm1.controls.name.touched">
+          <div class="alert alert-danger" *ngIf="kitchenForm1.controls.name.errors?.required">Enter your kitchen's name</div>
+          <div class="alert alert-danger" *ngIf="kitchenForm1.controls.name.errors?.minlength">Kitchen name must be at least 2 characters</div>
+        </div>
+
+      <label>Email</label>
+      <input type="text" [class.is-invalid] = "kitchenForm1.controls.email.invalid && kitchenForm1.controls.email.touched"
+      formControlName="email" class="form-control">
+        <div *ngIf="kitchenForm1.controls.email.errors && kitchenForm1.controls.email.touched">
+          <div class="alert alert-danger" *ngIf="kitchenForm1.controls.email.errors?.required">An email is required</div>
+          <div class="alert alert-danger" *ngIf="kitchenForm1.controls.email.errors?.email">Enter a valid email</div>
+        </div>
+
+      <label>Password</label>
+      <input type="password" [class.is-invalid] = "kitchenForm1.controls.password.invalid && kitchenForm1.controls.password.touched"
+      formControlName="password" class="form-control">
+        <div *ngIf="kitchenForm1.controls.password.errors && kitchenForm1.controls.password.touched">
+          <div class="alert alert-danger" *ngIf="kitchenForm1.controls.password.errors?.required">Enter your passsword</div>
+          <div class="alert alert-danger" *ngIf="kitchenForm1.controls.password.errors?.minlength">Password must be at least 5 characters</div>
+        </div>
+
+      <label>Confirm Password</label>
+      <input type="password" [class.is-invalid] = "kitchenForm1.controls.confirmPassword.invalid && kitchenForm1.controls.confirmPassword.touched"
+      formControlName="confirmPassword" class="form-control">
+        <div *ngIf="kitchenForm1.controls.confirmPassword.errors && kitchenForm1.controls.confirmPassword.touched">
+          <div class="alert alert-danger" *ngIf="kitchenForm1.controls.confirmPassword.errors?.required">Confirm your passsword</div>
+        </div>
+        <div *ngIf="kitchenForm1.hasError('notSame')" class="alert alert-danger"> Passwords do not match</div>
+
+      <div class="pt-2">
+        <button class="btn btn-primary" [disabled]="!kitchenForm1.valid" type="submit">Next</button>
+        <button class="btn btn-secondary" (click) ="cancel()">Cancel</button>
+      </div>
+      
+    </form>
+  </div>
+
+  <!-- Page 2-->
+  <ng-template #pg2>
+    <form [formGroup]="kitchenForm2" (ngSubmit) = "onSubmitPg2(kitchenForm2)">
+      <label>Kitchen Working Days: </label>
+      <!-- Arrray of Checkboxes for working day selection-->
+      <div *ngFor="let day of workdays; let i=index">
+        <label>
+          <input type="checkbox" [value]="day.value" (change)="onCheckboxChange($event)" />
+          {{day.name}}
+        </label>
+      </div>
+      <div class="alert alert-danger" *ngIf="this.kitchenForm2.controls['checkArray'].errors?.required">
+        Select at least one day the kitchen is open
+      </div>
+
+      <!-- Working time drop down selections-->
+      <div>
+        <label class="pr-4">Kitchen Working Time:</label>
+        <select class="form-select" (change)="startChanged($event)" formControlName="startTime">
+          <option value="">Start Time</option>
+          <option *ngFor="let time1 of worktimes" [ngValue]="time1">{{time1}}</option>
+        </select>
+        <select class="form-select" (change)="endChanged($event)" formControlName="endTime">
+          <option value="">End Time</option>
+          <option *ngFor="let time2 of worktimes" [ngValue]="time2">{{time2}}</option>
+        </select>
+        <div class="alert alert-danger" *ngIf="this.kitchenForm2.controls.startTime.errors?.required || this.kitchenForm2.controls.endTime.errors?.required">
+          Select a start time and end time for your kitchen
+        </div>
+      </div>
+
+      <!-- Kitchen image upload -->
+      <label class="pr-4">Kitchen Image:</label>
+      <label class="btn btn-light">
+        <input type="file" (change)="selectFile($event)">
+      </label>
+      <div class="ml-5">
+        <button type="button" class="btn-lg btn-success" [disabled]="!selectedFiles" (click)="upload()">Upload</button>
+      </div>
+      
+      <!-- Kitchen Menu items input-->
+      <div class="card m-3">
+        <h5 class="card-header">Kitchen Menu Items</h5>
+        <div class="card-body border-bottom">
+          <div class="form-group">
+            <label>Number of Menu Items</label>
+            <select formControlName="numberOfItems" class="form-control" (change)="onChangeItemNumber($event)" [class.is-invalid]="kitchenForm2.controls.numberOfItems.invalid && kitchenForm2.controls.numberOfItems.touched">
+              <option value=""></option>
+              <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{i}}</option>
+            </select>
+            <div *ngIf="kitchenForm2.controls.numberOfItems.errors && kitchenForm2.controls.numberOfItems.touched">
+              Number of Menu items is required
+            </div>
+          </div>
+        </div>
+        <div *ngFor="let item of menuItemFormGroups; let i=index" class="list-group list-group-flush">
+          <div class="list-group-item">
+            <h5 class="card-title">Menu Item {{i + 1}}</h5>
+            <div [formGroup]="item" class="form-row">
+              <div class="form-group col-6">
+                <label>Name</label>
+                <input type="text" formControlName="name" class="form-control" [class.is-invalid]="item.controls.name.invalid && item.controls.name.touched"/>
+                <div *ngIf="item.controls.name.invalid && item.controls.name.touched" class="alert alert-danger">
+                  Item name is required
+                </div>
+              </div>
+              <div class="form-group col-3">
+                <label class="pr-2">Price </label>
+                <span class="input-group-addon">$</span>
+                <input type="number" formControlName="price" class="form-control" [class.is-invalid]="item.controls.price.invalid && item.controls.price.touched"/>
+                <div *ngIf="item.controls.price.invalid && item.controls.price.touched" class="alert alert-danger">
+                  Item price is required
+                </div>
+              </div>
+              <div class="form-group col-3">
+                <label>Vegetarian</label>
+                <select formControlName="veg" class="form-control" [class.is-invalid]="item.controls.veg.invalid && item.controls.veg.touched">
+                  <option value=false>False</option>
+                  <option value=true>True</option>
+                </select>
+                <div *ngIf="item.controls.veg.invalid && item.controls.veg.touched" class="alert alert-danger">
+                  Select if the item is Vegetarian
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+      <button class="btn btn-primary" [disabled]="!kitchenForm2.valid" type="submit">Submit</button>
+      <button class="btn btn-secondary" (click) ="cancel()">Cancel</button>
+
+    </form>
+  </ng-template>
+</div>
+

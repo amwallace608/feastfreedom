@@ -1,0 +1,14 @@
+<div class="d-flex flex-row my-3">
+  <div class="d-flex justify-content-center">
+      <!-- Cards for each kitchen-->
+      <div *ngFor="let kitchen of kitchens;" class="card mx-5" style="width: 18rem;">
+        <img src={{kitchen.image}} class="card-img-top" >
+        <div class="card-body">
+          <h5 class="card-title">{{kitchen.name}}</h5>
+          <p class="card-text">Open: {{kitchen.startTime}} to {{kitchen.endTime}}</p>
+          <button type="button" class="btn btn-primary" (click)="viewMenu(kitchen)">Menu</button>
+        </div>
+      </div>
+  </div>
+</div>
+

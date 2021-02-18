@@ -1,0 +1,22 @@
+<h2 class="m-4">Shopping Cart</h2>
+<div class="d-flex p-4 justify-content-center">
+  <br>
+  <div class="container">
+    <div class="row border-bottom border-3">
+      <div class="col-6 py-2"><h4>Item Name</h4></div>
+      <div class="col-4 py-2"><h4>Vegetarian</h4></div>
+      <div class="col-2 py-2"><h4>Price</h4></div>
+    </div>
+    <div *ngFor="let item of shoppingCart;" class="row border-bottom border-2">
+      <div class="col-6 py-1">{{item.name}}</div>
+      <div class="col-4 py-1">{{item.veg ? 'yes' : 'no'}}</div>
+      <div class="col-2 py-1">{{item.price | currency:'USD':true:'1.2-4'}}</div>
+    </div>
+    <div class="d-flex m-3 justify-content-end">
+      <h6>Total: {{totalPrice | currency:'USD':true:'1.2-4'}}</h6>  
+    </div>
+    <div class="d-flex m-2 justify-content-end">
+      <button class="btn btn-danger" (click)="clearCart()">Clear Cart</button>
+    </div>
+  </div>
+</div>
